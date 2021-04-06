@@ -1,7 +1,9 @@
+import re
+
 txtNum = ' 일 이 삼 사 오 육 칠 팔 구'.split(' ')
+txtNum2 = '영 일 이 삼 사 오 육 칠 팔 구'.split(' ')
 txtK = ' 십 백 천'.split(' ')
 txtM = ' 만 억 조 경 해 서 양 간 정 극 항아사 아승기 나유타 불가사의'.split(' ')
-txtDigit = ' 십 백 천 만 십만 백만 천만 억 십억 백억 천억 조 십조 백조 천조 경 십경 백경 천경 해 십해 백해 천해 서 십서 백서 천서 양 십양 백양 천양 구 십양 백양 구양 간 십간 백간 천간 정 십정 백정 천정 재 십정 백재 천재 극 십극 백극 천극 만극 항아사 십항아사 백항아사 천항아사 만항아사 아승기 십아승기 백아승기 천아승기 나유타 십나유타 백나유타 천나유타 불가사의'.split(' ')
 
 #TODO: ADD conversion for decimals
 txtPoint = '쩜'
@@ -38,11 +40,21 @@ def convert(num):
 		result_str = convert_helper(temp_str)+txtM[i] + ' ' + result_str
 	
 	return result_str
-		
-		
+
+def process(num):		
+	regex = re.compile('^(\d+)\.(\d+)$')
+	
+	if (regex.match(str(num))):
+		matches = regex.findall(str(num))[0]
+		result_str = convert(matches[0]) + '쩜'
+		for i in range(len(matches[1])):
+			result_str = result_str + ' ' + txtNum2[int(str(matches[1][i]))]
+		return result_str
+	else:
+		return convert(num)
 
 def assertconversion(test, expected, name):
-	test = convert(test)
+	test = process(test)
 	if (test == expected) :
 		print('test passed!')
 	else :
@@ -52,12 +64,12 @@ def assertconversion(test, expected, name):
 if __name__ == "__main__":
 	# input as 12345, expected 일만 이천 삼백 사십 오
 	test = 12345
-	expected = '일만 이천 삼백 사십 오'
+	expected = '일만 이천 삼백 사십 오 '
 
 	assertconversion(test, expected, 'test 1')
 
 	# interactive
 	userinput = input("Enter a number to convert to korean word : ")
-	print(convert(userinput))
+	print(process(userinput))
 	
 	exit(0)
